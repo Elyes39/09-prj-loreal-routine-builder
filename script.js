@@ -253,6 +253,25 @@ function renderMarkdownToHTML(md) {
 
   for (let rawLine of lines) {
     const line = rawLine.trim();
+
+    // Headers: #, ##, ### ... up to 6
+    const headerMatch = line.match(/^(#{1,6})\s*(.*)$/);
+    if (headerMatch && headerMatch[2].trim() !== "") {
+      // close lists if open
+      if (inUL) {
+        html += "</ul>";
+        inUL = false;
+      }
+      if (inOL) {
+        html += "</ol>";
+        inOL = false;
+      }
+      const level = Math.min(6, headerMatch[1].length);
+      const content = renderInlineFormatting(headerMatch[2].trim());
+      html += `<h${level} style="margin:0.4rem 0">${content}</h${level}>`;
+      continue;
+    }
+
     if (line.match(/^([-*])\s+(.+)/)) {
       // unordered list
       if (!inUL) {
@@ -272,6 +291,7 @@ function renderMarkdownToHTML(md) {
       html += `<li>${renderInlineFormatting(item)}</li>`;
       continue;
     }
+
     // close any open lists when encountering a normal line
     if (inUL) {
       html += "</ul>";
