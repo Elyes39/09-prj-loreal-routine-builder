@@ -352,3 +352,22 @@ body {
   background: #fff7e9;
   border-left: 4px solid var(--loreal-gold);
 }
+
+/* Ensure lists and long words wrap inside the chat bubble and that
+   list markers (bullets/numbers) are rendered inside the bubble. */
+.chat-window .message {
+  box-sizing: border-box;
+  white-space: pre-wrap; /* preserve line breaks from assistant */
+  overflow-wrap: anywhere; /* break long words/URLs */
+}
+
+.chat-window .message ul,
+.chat-window .message ol {
+  margin: 0.5rem 0;
+  padding-left: 1.25rem; /* ensure marker is inside the bubble */
+  list-style-position: outside;
+}
+
+.chat-window .message li {
+  margin: 0.25rem 0;
+}
