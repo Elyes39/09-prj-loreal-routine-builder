@@ -206,9 +206,94 @@ function toggleSelection(id) {
 function appendMessage(role, text) {
   const el = document.createElement("div");
   el.className = "message " + (role === "user" ? "user" : "assistant");
-  el.textContent = text;
+  // Render assistant replies as simple sanitized Markdown -> HTML,
+  // user messages remain plain text for safety.
+  if (role === "assistant") {
+    el.innerHTML = renderMarkdownToHTML(text);
+  } else {
+    el.textContent = text;
+  }
   chatWindow.appendChild(el);
   chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+/* Lightweight, safe Markdown-to-HTML renderer for common patterns.
+   Escapes HTML first to prevent XSS, then converts simple inline
+   formatting and lists. This is intentionally small and not a full
+   markdown implementation. */
+function escapeHtml(unsafe) {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function renderInlineFormatting(s) {
+  // bold **text** or __text__
+  s = s.replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>");
+  s = s.replace(/__(.+?)__/g, "<strong>$1</strong>");
+  // italic *text* or _text_
+  s = s.replace(/\*(.+?)\*/g, "<em>$1</em>");
+  s = s.replace(/_(.+?)_/g, "<em>$1</em>");
+  // inline code `code`
+  s = s.replace(/`([^`]+?)`/g, "<code>$1</code>");
+  return s;
+}
+
+function renderMarkdownToHTML(md) {
+  if (!md) return "";
+  // Escape first
+  const escaped = escapeHtml(md);
+  const lines = escaped.split(/\r?\n/);
+  let html = "";
+  let inUL = false;
+  let inOL = false;
+
+  for (let rawLine of lines) {
+    const line = rawLine.trim();
+    if (line.match(/^([-*])\s+(.+)/)) {
+      // unordered list
+      if (!inUL) {
+        html += "<ul>";
+        inUL = true;
+      }
+      const item = line.replace(/^([-*])\s+/, "");
+      html += `<li>${renderInlineFormatting(item)}</li>`;
+      continue;
+    }
+    if (line.match(/^\d+\.\s+(.+)/)) {
+      if (!inOL) {
+        html += "<ol>";
+        inOL = true;
+      }
+      const item = line.replace(/^\d+\.\s+/, "");
+      html += `<li>${renderInlineFormatting(item)}</li>`;
+      continue;
+    }
+    // close any open lists when encountering a normal line
+    if (inUL) {
+      html += "</ul>";
+      inUL = false;
+    }
+    if (inOL) {
+      html += "</ol>";
+      inOL = false;
+    }
+
+    if (line === "") {
+      // blank line -> paragraph break
+      html += "<p></p>";
+    } else {
+      html += `<p>${renderInlineFormatting(line)}</p>`;
+    }
+  }
+
+  if (inUL) html += "</ul>";
+  if (inOL) html += "</ol>";
+
+  return html;
 }
 
 /* Send conversation + selected products to Worker and return assistant reply text */
