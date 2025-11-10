@@ -13,6 +13,13 @@ body {
   justify-content: center;
 }
 
+/* Brand colors: L'Oréal */
+:root {
+  --loreal-red: #ff003b;
+  --loreal-gold: #e3a535;
+  --muted: #666666;
+}
+
 .page-wrapper {
   width: 90%;
   max-width: 900px;
@@ -34,6 +41,11 @@ body {
   font-size: 22px;
   font-weight: 500;
   margin-bottom: 10px;
+}
+
+.site-title {
+  color: var(--loreal-red);
+  letter-spacing: 0.4px;
 }
 
 /* category filter */
@@ -61,7 +73,7 @@ body {
 /* chat section */
 .chatbox {
   margin: 40px 0;
-  border: 2px solid #000;
+  border: 2px solid var(--loreal-red);
   border-radius: 8px;
   padding: 26px;
 }
@@ -213,11 +225,49 @@ body {
   color: #666;
 }
 
+.product-card {
+  background: #fff;
+  transition: transform 0.12s ease, box-shadow 0.12s ease,
+    border-color 0.12s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.product-card .brand {
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.product-card .details-btn {
+  margin-top: 8px;
+  background: transparent;
+  border: 1px solid #ddd;
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  align-self: flex-start;
+}
+
+.product-card .details-btn[aria-expanded="true"] {
+  border-color: var(--loreal-gold);
+  color: var(--loreal-gold);
+}
+
+.product-card .description {
+  margin-top: 10px;
+  color: #444;
+  font-size: 14px;
+}
+
 /* selected products */
 .selected-products {
   margin: 40px 0;
   padding: 20px;
-  border: 2px solid #000;
+  border: 2px solid var(--loreal-red);
   border-radius: 8px;
 }
 
@@ -239,7 +289,7 @@ body {
   font-size: 18px;
   font-weight: 500;
   color: #fff;
-  background: #000;
+  background: var(--loreal-red);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -247,9 +297,58 @@ body {
 }
 
 .generate-btn:hover {
-  background: #666;
+  background: #d60035;
 }
 
 .generate-btn i {
   margin-right: 8px;
+}
+
+/* selected chips and clear button */
+.selected-chip {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  background: #fff;
+  border: 1px solid #ddd;
+  padding: 8px 10px;
+  border-radius: 18px;
+  font-weight: 500;
+}
+
+.selected-chip button {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.product-card.selected {
+  border-color: var(--loreal-red);
+  box-shadow: 0 10px 30px rgba(255, 0, 59, 0.08);
+}
+
+.clear-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: white;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+/* chat message bubbles */
+.chat-window .message {
+  margin-bottom: 12px;
+  padding: 12px;
+  border-radius: 8px;
+}
+.chat-window .message.user {
+  background: rgba(0, 0, 0, 0.06);
+  align-self: flex-end;
+}
+.chat-window .message.assistant {
+  background: #fff7e9;
+  border-left: 4px solid var(--loreal-gold);
 }

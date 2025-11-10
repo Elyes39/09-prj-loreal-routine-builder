@@ -46,9 +46,21 @@
       <div class="selected-products">
         <h2>Selected Products</h2>
         <div id="selectedProductsList"></div>
-        <button id="generateRoutine" class="generate-btn">
-          <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Routine
-        </button>
+        <div style="display: flex; gap: 10px; flex-direction: column">
+          <div style="display: flex; gap: 10px; align-items: center">
+            <button
+              id="clearSelected"
+              class="clear-btn"
+              aria-label="Clear selected products"
+            >
+              Clear All
+            </button>
+            <div style="flex: 1"></div>
+          </div>
+          <button id="generateRoutine" class="generate-btn">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Routine
+          </button>
+        </div>
       </div>
 
       <!------- Chat Area ------->
