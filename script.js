@@ -330,7 +330,18 @@ async function sendMessageToWorker() {
     }));
 
   const body = {
-    messages: messages,
+    // Include selected products as a system-context message at the start
+    // so the Worker / model can use them even if it doesn't read a top-level `products` field.
+    messages:
+      selected.length > 0
+        ? [
+            {
+              role: "system",
+              content: "SELECTED_PRODUCTS_JSON:\n" + JSON.stringify(selected),
+            },
+            ...messages,
+          ]
+        : messages,
     products: selected,
   };
 
